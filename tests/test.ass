@@ -1,6 +1,9 @@
 ;===TEST===
 ld 5 
-st $65
+st $64
+out $64
+in $65
 ld $65 
-st $66
+st $64
+out $65
 end
