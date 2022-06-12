@@ -13,20 +13,18 @@ COMMANDS = {
     ":=": "Assign",
     "read": "Read",
     "puts": "Puts",
-    # "+": "Add",
-    # "print": "Print",
-    # "=": "Equals",
+    #"+": "Add",
+    #"print": "Print",
+    #"=": "Equals",
 }
 
 # IO functions
-
 
 def read_input_file(filepath: str):
     with open(filepath) as f:
         lines = f.readlines()
     f.close()
     return lines
-
 
 def write_output_file(program: str, filepath: str):
     f = open(filepath, "w")
@@ -45,21 +43,17 @@ def compile(lines: str, name: str, path: str):
     write_output_file(program, path)
     pass
 
-
 def compile_line(line: str):
     res = interpret_statement(line)
-    return res + "\n"
-
+    return res
 
 def tokenize(line: str):
     tokens = line.split()
     return tokens
 
-
 def get_last_cell():
     global LAST_CELL
     return f"${LAST_CELL}"
-
 
 def bump_last_cell(amount: int = 1):
     global LAST_CELL
@@ -70,21 +64,18 @@ def bump_last_cell(amount: int = 1):
 
     return f"${LAST_CELL}"
 
-
 def create_var(var: str):
     global VARS
     VARS.update({var: bump_last_cell()})
     pass
-
 
 def get_var(var: str):
     global VARS
 
     if(var not in VARS):
         raise NotImplementedError("Variable doesn't exist")
-
+        
     return VARS[var]
-
 
 def get_or_create_var(var: str):
     global VARS
@@ -93,7 +84,6 @@ def get_or_create_var(var: str):
         create_var(var)
 
     return VARS[var]
-
 
 def is_num(token: str):
     return token.isnumeric()
@@ -113,13 +103,16 @@ def get_method(name: str):
 def interpret_statement(statement: str):
     tokens = tokenize(statement)
 
+    if tokens[0] == tokens[1] == "/":
+        res = f";{tokens[1:]}"
+
     for token in tokens:
         if token in COMMANDS:
             res = COMMANDS[token]
             break
 
     # if len(tokens) == 1 and tokens[0] in VARS:
-    #     res =
+    #     res = 
 
     if not res:
         print("No command or variable in statement")
@@ -129,10 +122,9 @@ def interpret_statement(statement: str):
     res = method(statement)
     if not res:
         res = ""
-    return res
+    return res + "\n"
 
 # Commands
-
 
 def Assign(statement: str):
     tokens = tokenize(statement)
@@ -164,6 +156,8 @@ def Puts(statement: str):
     asm = f"out {var}"
     return asm
 
-
 def Test(statement: str):
     return "Test"
+
+
+

@@ -19,4 +19,4 @@ for test_file in test_files:
         PAss.compile(test, test_file.replace(".pass", ""), path_out)
         print(f"Success! \n")
     except Exception as e:
-        print(f"Test didn't finish. An error occured: \n {e}")
+        print(f"Test didn't finish. An error occured: \n {e} \n")

@@ -1,0 +1,6 @@
+;===TEST===
+; Hello World
+ld 5 
+st $64
+out $65 ; Look! Another comment
+end
