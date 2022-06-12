@@ -14,4 +14,9 @@ for test_file in test_files:
 
     path_out = os.path.join(os.path.dirname(__file__),
                             "../tests/out/") + test_file.replace('.pass', '.ass')
-    PAss.compile(test, test_file.replace(".pass", ""), path_out)
+
+    try:
+        PAss.compile(test, test_file.replace(".pass", ""), path_out)
+        print(f"Success! \n")
+    except Exception as e:
+        print(f"Test didn't finish. An error occured: \n {e}")

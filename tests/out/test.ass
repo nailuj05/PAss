@@ -2,8 +2,9 @@
 ld 5 
 st $64
 out $64
-in $65
-ld $65 
-st $64
 out $65
+in $66
+ld $66 
+st $64
+out $66
 end

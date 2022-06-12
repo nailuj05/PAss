@@ -1,5 +1,6 @@
 a := 5
 puts a
+puts 5
 read b
 a := b
 puts b
