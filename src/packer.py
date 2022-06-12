@@ -13,14 +13,9 @@ def pack():
     of = open(pass_path, 'w')
     if j["nbformat"] >= 4:
         for i, cell in enumerate(j["cells"]):
-            of.write("#cell "+str(i)+"\n")
             for line in cell["source"]:
-                of.write(line)
-            of.write('\n\n')
-    else:
-        for i, cell in enumerate(j["worksheets"][0]["cells"]):
-            of.write("#cell "+str(i)+"\n")
-            for line in cell["input"]:
+                if line.__contains__("# TESTS"):
+                    break
                 of.write(line)
             of.write('\n\n')
 
