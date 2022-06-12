@@ -5,7 +5,7 @@ import json
 def pack():
     # Get Global Paths
     dev_path = os.path.dirname(__file__) + "\\dev.ipynb"
-    pass_path = os.path.dirname(__file__) + "\\pass.py"
+    pass_path = os.path.dirname(__file__) + "\\PAss.py"
 
     # Compile .py
     f = open(dev_path, "r")
