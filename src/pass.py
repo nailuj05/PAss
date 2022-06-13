@@ -4,12 +4,12 @@ import os
 # Compiler Statements
 
 LAST_CELL = 63
+CURRENT_LINE = 0
 
 VARS = {
 }
 
 COMMANDS = {
-    "TEST": "Test",
     ":=": "Assign",
     "read": "Read",
     "puts": "Puts",
@@ -44,6 +44,9 @@ def compile(lines: str, name: str, path: str):
     pass
 
 def compile_line(line: str):
+    global CURRENT_LINE
+    CURRENT_LINE += 1
+
     res = interpret_statement(line)
     return res
 
@@ -96,32 +99,35 @@ def get_method(name: str):
     possibles.update(locals())
     method = possibles.get(name)
     if not method:
-        raise NotImplementedError("Method %s not implemented" % name)
+        raise NotImplementedError(f"Error in line {CURRENT_LINE}:\n Method {name} not implemented.")
     return method
 
 
 def interpret_statement(statement: str):
     tokens = tokenize(statement)
+    res = ""
 
-    if tokens[0] == tokens[1] == "/":
-        res = f";{tokens[1:]}"
+    # if len(tokens) == 1 and not is_num(tokens[0]):
+    #         res = f""
 
-    for token in tokens:
-        if token in COMMANDS:
-            res = COMMANDS[token]
-            break
+    for i in range(len(tokens)):
+        if tokens[i] in COMMANDS:
+            res = COMMANDS[tokens[i]]
+            method = get_method(res)
+            res = method(statement)
 
-    # if len(tokens) == 1 and tokens[0] in VARS:
-    #     res = 
+        if tokens[i] == "//":
+            if len(tokens[i+1:]) > 0:
+                if(res != ""):
+                    res += f" ; {' '.join(tokens[i+1:])}"
+                else:
+                    res = f"; {' '.join(tokens[i+1:])}"
 
-    if not res:
-        print("No command or variable in statement")
+    if res == "":
+        raise NotImplementedError(
+            f"Error in line {CURRENT_LINE}:\n No command or variable in statement.")
         return ""
 
-    method = get_method(res)
-    res = method(statement)
-    if not res:
-        res = ""
     return res + "\n"
 
 # Commands
@@ -130,7 +136,7 @@ def Assign(statement: str):
     tokens = tokenize(statement)
     # Check Tokens
     if is_num(tokens[0]):
-        raise NotImplementedError("Variable Name incorrect")
+        raise NotImplementedError(f"Error in line {CURRENT_LINE}:\n Variable Name incorrect")
 
     if is_num(tokens[2]):
         load = tokens[2]
@@ -141,6 +147,9 @@ def Assign(statement: str):
     asm += "st "
     asm += get_or_create_var(tokens[0])
     return asm
+
+def Comment(statement: str):
+    pass
 
 
 def Read(statement: str):
@@ -155,9 +164,6 @@ def Puts(statement: str):
     var = get_or_create_var(tokens[1])
     asm = f"out {var}"
     return asm
-
-def Test(statement: str):
-    return "Test"
 
 
 

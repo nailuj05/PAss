@@ -1,6 +1,6 @@
 a := 15
 b := 10
 a += 5
-puts a // 20
+puts a //20
 b += a
-puts b // 30
+puts b //30
