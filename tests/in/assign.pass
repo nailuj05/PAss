@@ -1,0 +1,7 @@
+a := 42
+c := b := a
+b := a := 12
+//Should output: 42
+puts c
+//Should output: 12
+puts b
