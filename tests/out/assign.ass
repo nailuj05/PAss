@@ -1,0 +1,10 @@
+;===assign===
+ld 42 
+st $64
+st $66
+st $65
+;Should output: 42
+out $66
+;Should output: 12
+out $65
+end

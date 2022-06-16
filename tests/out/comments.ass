@@ -1,8 +1,8 @@
-;===TEST===
+;===comments===
 ;Hello World
 ld 5 
 st $64
 
 ; Hello there
-out $65
+out $67
 end

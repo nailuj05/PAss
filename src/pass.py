@@ -11,20 +11,25 @@ VARS = {
 
 COMMANDS = {
     ":=": "Assign",
+    "+": "Add",
+    "+=": "AddTo",
     "read": "Read",
     "puts": "Puts",
-    #"+": "Add",
-    #"print": "Print",
-    #"=": "Equals",
+    "//": "Comment"
+    # "+": "Add",
+    # "print": "Print",
+    # "=": "Equals",
 }
 
 # IO functions
+
 
 def read_input_file(filepath: str):
     with open(filepath) as f:
         lines = f.readlines()
     f.close()
     return lines
+
 
 def write_output_file(program: str, filepath: str):
     f = open(filepath, "w")
@@ -43,6 +48,7 @@ def compile(lines: str, name: str, path: str):
     write_output_file(program, path)
     pass
 
+
 def compile_line(line: str):
     global CURRENT_LINE
     CURRENT_LINE += 1
@@ -50,13 +56,16 @@ def compile_line(line: str):
     res = interpret_statement(line)
     return res
 
+
 def tokenize(line: str):
     tokens = line.split()
     return tokens
 
+
 def get_last_cell():
     global LAST_CELL
     return f"${LAST_CELL}"
+
 
 def bump_last_cell(amount: int = 1):
     global LAST_CELL
@@ -67,18 +76,21 @@ def bump_last_cell(amount: int = 1):
 
     return f"${LAST_CELL}"
 
+
 def create_var(var: str):
     global VARS
     VARS.update({var: bump_last_cell()})
     pass
+
 
 def get_var(var: str):
     global VARS
 
     if(var not in VARS):
         raise NotImplementedError("Variable doesn't exist")
-        
+
     return VARS[var]
+
 
 def get_or_create_var(var: str):
     global VARS
@@ -87,6 +99,7 @@ def get_or_create_var(var: str):
         create_var(var)
 
     return VARS[var]
+
 
 def is_num(token: str):
     return token.isnumeric()
@@ -99,7 +112,8 @@ def get_method(name: str):
     possibles.update(locals())
     method = possibles.get(name)
     if not method:
-        raise NotImplementedError(f"Error in line {CURRENT_LINE}:\n Method {name} not implemented.")
+        raise NotImplementedError(
+            f"Error in line {CURRENT_LINE}:\n Method {name} not implemented.")
     return method
 
 
@@ -111,45 +125,55 @@ def interpret_statement(statement: str):
     #         res = f""
 
     for i in range(len(tokens)):
+        if tokens[i].__contains__("//") and not tokens[i] == "//":
+            tokens.insert(i+1, tokens[i][2:].strip())
+            tokens[i] = "//"
+
         if tokens[i] in COMMANDS:
             res = COMMANDS[tokens[i]]
             method = get_method(res)
             res = method(statement)
-
-        if tokens[i] == "//":
-            if len(tokens[i+1:]) > 0:
-                if(res != ""):
-                    res += f" ; {' '.join(tokens[i+1:])}"
-                else:
-                    res = f"; {' '.join(tokens[i+1:])}"
-
-    if res == "":
-        raise NotImplementedError(
-            f"Error in line {CURRENT_LINE}:\n No command or variable in statement.")
-        return ""
+            break
 
     return res + "\n"
 
 # Commands
 
+
 def Assign(statement: str):
     tokens = tokenize(statement)
+    asm = ""
     # Check Tokens
     if is_num(tokens[0]):
-        raise NotImplementedError(f"Error in line {CURRENT_LINE}:\n Variable Name incorrect")
+        raise NotImplementedError(
+            f"Error in line {CURRENT_LINE}:\n Variable Name incorrect")
 
-    if is_num(tokens[2]):
-        load = tokens[2]
+    if tokens[1] != ':=':
+        raise SyntaxError(f"Command in wrong place")
+
+    if len(tokens[2:]) > 1:
+        load = interpret_statement(' '.join(tokens[2:]))
+        print(f"Nested: \n{load}")
     else:
-        load = get_var(tokens[2])
+        if is_num(tokens[2]):
+            load = tokens[2]
+        else:
+            load = get_var(tokens[2])
+        asm = f"ld {load} \n"
 
-    asm = f"ld {load} \n"
     asm += "st "
     asm += get_or_create_var(tokens[0])
+
     return asm
 
+
 def Comment(statement: str):
-    pass
+    statement = statement.strip()
+    print(statement)
+    asm = ""
+    if(len(statement) > 2):
+        asm = f";{statement[2:]}"
+    return asm
 
 
 def Read(statement: str):
@@ -164,6 +188,3 @@ def Puts(statement: str):
     var = get_or_create_var(tokens[1])
     asm = f"out {var}"
     return asm
-
-
-

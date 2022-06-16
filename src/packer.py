@@ -14,7 +14,7 @@ def pack():
     if j["nbformat"] >= 4:
         for i, cell in enumerate(j["cells"]):
             for line in cell["source"]:
-                if line.__contains__("# TESTS"):
+                if line.__contains__("# DEBUG"):
                     break
                 of.write(line)
             of.write('\n\n')
